@@ -5,7 +5,7 @@ import com.github.swagger.docgen.GenerateException;
 /**
  * SwaggerDocumentGenerator
  */
-public class SwaggerDocumentGenerator {
+class SwaggerDocumentGenerator {
 
     ClassLoader classLoader;
 
