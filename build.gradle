@@ -1,0 +1,59 @@
+apply plugin: 'maven'
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+
+group = 'com.cactusdesign'
+version = '1.0.1-SNAPSHOT'
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+ext {
+    libraries = [
+            // Compile dependencies...
+            'commons-lang3':['org.apache.commons:commons-lang3:3.1'],
+            'httpclient':['org.apache.httpcomponents:httpclient:4.2.2'],
+            'mustache':['com.github.spullara.mustache.java:compiler:0.8.12'],
+            'paranamer':['com.thoughtworks.paranamer:paranamer:2.5.2'],
+            'swagger-jaxrs':['com.wordnik:swagger-jaxrs_2.10:1.3.2'],
+            'swagger-jersey-jaxrs':['com.wordnik:swagger-jersey-jaxrs_2.10:1.3.2'],
+            'reflections':['org.reflections:reflections:0.9.9-RC1'],
+            'commons-io':['commons-io:commons-io:2.0.1'],
+            'slf4j':['org.slf4j:slf4j-api:1.7.2'],
+            'rs-api':['javax.ws.rs:javax.ws.rs-api:2.0'],
+            'logback':['ch.qos.logback:logback-classic:1.0.9','ch.qos.logback:logback-core:1.0.9'],
+    ]
+}
+
+tasks.withType(Compile) {
+    options.compilerArgs << "-Xlint:unchecked"
+}
+
+repositories {
+    mavenLocal()
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+
+    compile libraries.'commons-lang3'
+    compile libraries.'httpclient'
+    compile libraries.'mustache'
+    compile libraries.'swagger-jaxrs'
+    compile libraries.'swagger-jersey-jaxrs'
+    compile libraries.'reflections'
+    compile libraries.'commons-io'
+    compile libraries.'rs-api'
+    compile libraries.'slf4j'
+    compile libraries.'logback'
+}
