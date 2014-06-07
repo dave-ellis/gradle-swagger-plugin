@@ -3,26 +3,42 @@ package com.github.swagger.docgen.gradleplugin;
 import com.github.swagger.docgen.AbstractDocumentSource;
 import com.github.swagger.docgen.TypeUtils;
 import com.github.swagger.docgen.mustache.*;
+import com.google.common.base.Predicate;
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import org.reflections.Reflections;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import sample.api.car.CarResourceV1;
+import sample.api.car.CarResourceV2;
 import sample.model.*;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.*;
 
+import static com.google.common.collect.Collections2.filter;
 import static junit.framework.Assert.*;
 
 /**
  * GradleDocumentSourceTest
  */
 public class GradleDocumentSourceTest {
+    public static final String CAR_PACKAGE = "sample.api.car";
+    public static final String GARAGE_PACKAGE = "sample.api.garage";
+
     SwaggerPluginExtension swagger;
 
     @BeforeClass
@@ -31,7 +47,7 @@ public class GradleDocumentSourceTest {
 
         swagger.setApiVersion("1.0");
         swagger.setBasePath("http://example.com");
-        swagger.setEndPoints(new String[]{"sample.api.car;sample.api.garage"});
+        swagger.setEndPoints(new String[]{CAR_PACKAGE, GARAGE_PACKAGE});
         swagger.setOutputPath("sample.html");
         swagger.setOutputTemplate("https://github.com/kongchen/api-doc-template/blob/master/v1.1/html.mustache");
         swagger.setSwaggerDirectory(null);
@@ -52,6 +68,31 @@ public class GradleDocumentSourceTest {
             // set back
             swagger.setEndPoints(locations);
         }
+    }
+
+    @Test
+    public void testReflectionsUsage() throws MalformedURLException {
+
+        URL[] urls = {
+            new File("target/classes/test").toURI().toURL()
+        };
+        URLClassLoader classLoader = new URLClassLoader(urls, null);
+        Reflections reflections = new Reflections(classLoader, CAR_PACKAGE);
+        Set<Class<?>> c = reflections.getTypesAnnotatedWith(Api.class);
+
+        assertNotNull(c);
+        assertTrue(c.size() > 0);
+
+        assertFalse(filter(c, new Predicate<Class<?>>() {
+            public boolean apply(Class<?> cls) {
+                return cls.getSimpleName().equals(CarResourceV1.class.getSimpleName());
+            }
+        }).isEmpty());
+        assertFalse(filter(c, new Predicate<Class<?>>() {
+            public boolean apply(Class<?> cls) {
+                return cls.getSimpleName().equals(CarResourceV2.class.getSimpleName());
+            }
+        }).isEmpty());
     }
 
     @Test
@@ -112,7 +153,7 @@ public class GradleDocumentSourceTest {
 
 
         assertEquals(8, outputTemplate.getDataTypes().size());
-        List<MustacheDataType> typeList = new LinkedList<MustacheDataType>();
+        List<MustacheDataType> typeList = new LinkedList<>();
         for (MustacheDataType type : outputTemplate.getDataTypes()) {
             typeList.add(type);
         }
@@ -147,9 +188,9 @@ public class GradleDocumentSourceTest {
         for (MustacheItem item : dataType.getItems()) {
 
             String name = item.getName();
-            ApiModelProperty a = null;
+            ApiModelProperty a;
 
-            Field f = null;
+            Field f;
             try {
                 f = aClass.getDeclaredField(name);
                 a = f.getAnnotation(ApiModelProperty.class);
@@ -179,7 +220,7 @@ public class GradleDocumentSourceTest {
     private String getActualDataType(Class<?> aClass, String name) throws NoSuchFieldException {
         String t = null;
         Class<?> type = null;
-        Field f = null;
+        Field f;
         boolean isArray = false;
         ParameterizedType parameterizedType = null;
         for (Method _m : aClass.getMethods()) {
@@ -297,7 +338,7 @@ public class GradleDocumentSourceTest {
             return null;
         }
 
-        List<String> lst = new ArrayList<String>();
+        List<String> lst = new ArrayList<>();
         String[] array = srcStr.split(token);
 
         for (String str : array) {

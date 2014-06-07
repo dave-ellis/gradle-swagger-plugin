@@ -91,7 +91,7 @@ class GradleDocumentSource extends AbstractDocumentSource {
             for (String endPoint : swagger.endPoints) {
                 logger.info "Looking for valid classes in package: {}", endPoint
 
-                Reflections reflections = new Reflections(ConfigurationBuilder.build(classLoader, endPoint))
+                Reflections reflections = new Reflections(classLoader, endPoint)
                 Set<Class<?>> c = reflections.getTypesAnnotatedWith(Api.class);
 
                 classes.addAll(c);

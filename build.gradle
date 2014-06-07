@@ -3,7 +3,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 
-group = 'com.cactusdesign'
+group = 'com.github.gradle-swagger'
 version = '1.0.1-SNAPSHOT'
 
 idea {
@@ -29,7 +29,8 @@ ext {
             'commons-io':['commons-io:commons-io:2.0.1'],
             'slf4j':['org.slf4j:slf4j-api:1.7.2'],
             'rs-api':['javax.ws.rs:javax.ws.rs-api:2.0'],
-            'logback':['ch.qos.logback:logback-classic:1.0.9','ch.qos.logback:logback-core:1.0.9'],
+            'logback':['ch.qos.logback:logback-classic:1.0.13'],
+            'junit':['junit:junit:4.11'],
     ]
 }
 
@@ -50,10 +51,14 @@ dependencies {
     compile libraries.'httpclient'
     compile libraries.'mustache'
     compile libraries.'swagger-jaxrs'
-    compile libraries.'swagger-jersey-jaxrs'
+    compile(libraries.'swagger-jersey-jaxrs') {
+        exclude group: 'asm'
+    }
     compile libraries.'reflections'
     compile libraries.'commons-io'
     compile libraries.'rs-api'
     compile libraries.'slf4j'
     compile libraries.'logback'
+
+    testCompile libraries.'junit'
 }
