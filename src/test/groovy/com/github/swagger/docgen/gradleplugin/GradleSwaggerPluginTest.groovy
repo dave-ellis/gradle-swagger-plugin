@@ -17,7 +17,6 @@ class GradleSwaggerPluginTest {
     void pluginAddsGenerateSwaggerTask() {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'swagger'
-        assertTrue(project.tasks.generateSwaggerDocs instanceof GenerateSwaggerDocsTask)
-
+        assertTrue(project.tasks.swagger instanceof GenerateSwaggerDocsTask)
     }
 }

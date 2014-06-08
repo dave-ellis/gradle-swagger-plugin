@@ -246,6 +246,11 @@ public abstract class AbstractDocumentSource {
         }
         logger.info("Writing doc to " + outputPath + "...");
 
+        File dir = new File(outputPath).getParentFile();
+        if( !dir.exists() ) {
+            dir.mkdirs();
+        }
+
         FileOutputStream fileOutputStream;
         try {
             fileOutputStream = new FileOutputStream(outputPath);

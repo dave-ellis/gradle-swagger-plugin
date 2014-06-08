@@ -7,9 +7,12 @@ import org.gradle.api.tasks.TaskAction
  * GradleSwaggerTask 
  */
 class GenerateSwaggerDocsTask extends DefaultTask {
+    public static final String TASK_NAME = 'swagger'
+
+    String description = "Generates swagger documentation"
 
     @TaskAction
-    def generateSwaggerDocs() {
+    def generateSwaggerDocuments() {
         SwaggerPluginExtension swagger = project.swagger
         Iterable dependencies = project.configurations.runtime.resolve()
         File classesDir = project.sourceSets.main.output.classesDir
@@ -26,6 +29,6 @@ class GenerateSwaggerDocsTask extends DefaultTask {
 
         logger.debug "Preparing classloader with urls: {}", urls
 
-        return new URLClassLoader(urls as URL[])
+        return new URLClassLoader(urls as URL[], this.getClass().getClassLoader())
     }
 }

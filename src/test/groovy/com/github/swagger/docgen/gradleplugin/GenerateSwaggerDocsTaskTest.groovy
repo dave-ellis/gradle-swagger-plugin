@@ -13,7 +13,7 @@ class GenerateSwaggerDocsTaskTest {
     @Test
     void canAddTaskToProject() {
         Project project = ProjectBuilder.builder().build()
-        def task = project.task('generateSwaggerDocs', type: GenerateSwaggerDocsTask)
+        def task = project.task(GenerateSwaggerDocsTask.TASK_NAME, type: GenerateSwaggerDocsTask)
         assertTrue(task instanceof GenerateSwaggerDocsTask)
     }
 }

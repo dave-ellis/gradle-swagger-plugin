@@ -7,11 +7,11 @@ import org.gradle.api.Project
  * GradleSwaggerPlugin
  */
 class GradleSwaggerPlugin implements Plugin<Project> {
+
     void apply(Project project) {
         project.extensions.create("swagger", SwaggerPluginExtension)
 
-        project.task('generateSwaggerDocs', type: GenerateSwaggerDocsTask)
-                .shouldRunAfter('classes')
+        project.task(GenerateSwaggerDocsTask.TASK_NAME, type: GenerateSwaggerDocsTask, dependsOn: 'classes')
     }
 }
 

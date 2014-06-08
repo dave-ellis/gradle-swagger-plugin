@@ -57,7 +57,6 @@ class GradleDocumentSource extends AbstractDocumentSource {
                 throw new GenerateException(e);
             }
             if (doc == null) continue;
-            logger.info("Detect Resource:" + c.getName());
 
             Buffer<AuthorizationType> buffer = doc.authorizations().toBuffer();
             authorizationTypes.addAll(JavaConversions.asJavaList(buffer));
@@ -89,7 +88,7 @@ class GradleDocumentSource extends AbstractDocumentSource {
             classes.addAll(c);
         } else {
             for (String endPoint : swagger.endPoints) {
-                logger.info "Looking for valid classes in package: {}", endPoint
+                logger.debug "Looking for valid classes in package: {}", endPoint
 
                 Reflections reflections = new Reflections(classLoader, endPoint)
                 Set<Class<?>> c = reflections.getTypesAnnotatedWith(Api.class);
@@ -110,13 +109,18 @@ class GradleDocumentSource extends AbstractDocumentSource {
     }
 
     private ApiListing getDocFromClass(Class c, SwaggerConfig swaggerConfig, String basePath) throws Exception {
-        Api resource = (Api) c.getAnnotation(Api.class);
+        Api resource = c.getAnnotation(Api.class);
+        if (resource == null) {
+            logger.warn("Failed to get API annotation for {}", c.getSimpleName())
+            return null
+        }
 
-        if (resource == null) return null;
         JaxrsApiReader reader = new DefaultJaxrsApiReader();
         Option<ApiListing> apiListing = reader.read(basePath, c, swaggerConfig);
-
-        if (None.canEqual(apiListing)) return null;
+        if (None.canEqual(apiListing)) {
+            logger.warn("No API listing found for class {}", c.getSimpleName())
+            return null
+        }
 
         return apiListing.get();
     }

@@ -6,6 +6,9 @@ apply plugin: 'idea'
 group = 'com.github.gradle-swagger'
 version = '1.0.1-SNAPSHOT'
 
+
+defaultTasks 'install'
+
 idea {
     module {
         downloadJavadoc = true
