@@ -11,19 +11,24 @@ import com.wordnik.swagger.model.Operation;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created with IntelliJ IDEA.
  * User: kongchen
  * Date: 3/7/13
  */
 public class OutputTemplate {
+    private static final Logger logger = LoggerFactory.getLogger(OutputTemplate.class);
+
     private String basePath;
 
     private String apiVersion;
 
-    private List<MustacheDocument> apiDocuments = new ArrayList<MustacheDocument>();
+    private List<MustacheDocument> apiDocuments = new ArrayList<>();
 
-    private Set<MustacheDataType> dataTypes = new TreeSet<MustacheDataType>();
+    private Set<MustacheDataType> dataTypes = new TreeSet<>();
 
     public OutputTemplate(AbstractDocumentSource docSource) {
         feedSource(docSource);
@@ -47,6 +52,9 @@ public class OutputTemplate {
         if (dataTypes.contains(dataType)) {
             return;
         }
+
+        logger.debug("Adding data type: {}", dataType);
+
         dataTypes.add(dataType);
         for (MustacheItem item : dataType.getItems()) {
             String trueType = TypeUtils.getTrueType(item.getType());
@@ -96,8 +104,10 @@ public class OutputTemplate {
 
             for (scala.collection.Iterator<Operation> opIt  = api.operations().iterator(); opIt.hasNext(); ) {
                 Operation op = opIt.next();
-                MustacheOperation mustacheOperation = null;
-                mustacheOperation = new MustacheOperation(mustacheDocument, op);
+
+                logger.debug("Adding operation: {}", op);
+
+                MustacheOperation mustacheOperation = new MustacheOperation(mustacheDocument, op);
                 mustacheApi.addOperation(mustacheOperation);
                 addResponseType(mustacheDocument, mustacheOperation.getResponseClass());
             }
@@ -111,7 +121,7 @@ public class OutputTemplate {
             addDateType(mustacheDocument, dataType);
         }
 
-        Set<String> missedTypes = new LinkedHashSet<String>();
+        Set<String> missedTypes = new LinkedHashSet<>();
 
         for (String responseType : mustacheDocument.getResponseTypes()) {
             if (!mustacheDocument.getRequestTypes().contains(responseType)) {
@@ -137,12 +147,16 @@ public class OutputTemplate {
             MustacheDataType type = it.next();
 
             if (type.getItems() == null || type.getItems().size() == 0) {
+                logger.debug("Filtering out data type: {}", type);
+
                 it.remove();
             }
         }
     }
 
     private void addResponseType(MustacheDocument mustacheDocument, MustacheResponseClass responseClass) {
+        logger.debug("Add response type: {}", responseClass);
+
         mustacheDocument.addResponseType(responseClass);
         if (responseClass.getGenericClasses() != null) {
             for (MustacheResponseClass mrc : responseClass.getGenericClasses()){

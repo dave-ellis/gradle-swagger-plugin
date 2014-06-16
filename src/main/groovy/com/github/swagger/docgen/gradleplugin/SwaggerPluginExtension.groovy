@@ -15,6 +15,5 @@ class SwaggerPluginExtension {
     String[] endPoints
     String basePath
     String swaggerUIDocBasePath;
-    boolean useOutputFlatStructure = false;
-
+    boolean useOutputFlatStructure = true;
 }

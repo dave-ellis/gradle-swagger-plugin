@@ -244,7 +244,7 @@ public abstract class AbstractDocumentSource {
             logger.warn("nothing to write.");
             return;
         }
-        logger.info("Writing doc to " + outputPath + "...");
+        logger.debug("Creating swagger document: " + outputPath);
 
         File dir = new File(outputPath).getParentFile();
         if( !dir.exists() ) {
@@ -266,7 +266,6 @@ public abstract class AbstractDocumentSource {
 
             mustache.execute(writer, outputTemplate).flush();
             writer.close();
-            logger.info("Done!");
         } catch (MalformedURLException e) {
             throw new GenerateException(e);
         } catch (IOException e) {

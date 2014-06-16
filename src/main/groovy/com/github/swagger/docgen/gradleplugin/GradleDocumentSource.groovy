@@ -42,7 +42,7 @@ class GradleDocumentSource extends AbstractDocumentSource {
 
     @Override
     public void loadDocuments() throws GenerateException {
-        logger.info("Loading documents using config: {}", swagger)
+        logger.debug("Loading documents using config: {}", swagger)
 
         SwaggerConfig swaggerConfig = new SwaggerConfig();
         swaggerConfig.setApiVersion(swagger.apiVersion);
