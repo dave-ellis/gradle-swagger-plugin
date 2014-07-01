@@ -41,5 +41,5 @@ This a port of kongchen's maven plugin for generating swagger documents.  (See h
 * `outputPath` is the path of your output file, not existed parent directory of the file will be created.
 * If `swaggerDirectory` is configured, the plugin will also generate a Swagger resource listing suitable for feeding to swagger-ui.
     * `useOutputFlatStructure` indicates whether swagger output will be created in sub-directories by path defined in
-      @com.wordnik.swagger.annotations.Api#value (false), or the filename will be the path with replaced slashes to
+      `@com.wordnik.swagger.annotations.Api#value` (false), or the filename will be the path with replaced slashes to
       underscores (true). Default: true
